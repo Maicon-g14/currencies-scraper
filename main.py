@@ -1,6 +1,6 @@
 import requests
 from html.parser import HTMLParser
-
+from database_handler import DatabaseHandler
 
 ''' 
     Yahoo Finance currencies scraper 
@@ -20,7 +20,7 @@ headers = {
 class customHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.data = {PARSE_DATA[0]: PARSE_DATA[1:]}
+        self.data = {}
         self.key = []
         self.table_header = []
         self.col_selected = 0
@@ -92,7 +92,9 @@ def main():
         parser.feed(response.text)
         currencies[pair] = parser.data
 
-    print(currencies)
+    with DatabaseHandler('currencies_db.db') as dbh:
+        dbh.insert_data(currencies)
+        print(dbh.get_table())
 
 
 if __name__ == '__main__':
