@@ -1,6 +1,6 @@
 import requests
 from html.parser import HTMLParser
-
+from database_handler import DatabaseHandler
 
 ''' 
     Yahoo Finance currencies scraper 
@@ -10,7 +10,7 @@ from html.parser import HTMLParser
 
 PATH = 'https://finance.yahoo.com/quote/{}%3DX/history?p={}%3DX'
 PAIRS = ['BRLUSD', 'EURUSD', 'CHFUSD', 'EURCHF']
-PARSE_DATA = ['Date', 'Open', 'High', 'Low', 'Close*']
+PARSE_DATA = ['Date', 'Open', 'High', 'Low', 'Close']
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0'
@@ -20,7 +20,7 @@ headers = {
 class customHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.data = {PARSE_DATA[0]: PARSE_DATA[1:]}
+        self.data = {}
         self.key = []
         self.table_header = []
         self.col_selected = 0
@@ -50,7 +50,8 @@ class customHTMLParser(HTMLParser):
                 self.table = False
                 
     def parse_header(self, data):
-        if data in PARSE_DATA:
+        # To disregard the * at the end of 'Close' header
+        if data in PARSE_DATA or data[:-1] in PARSE_DATA:
             self.table_header.append(data)
         else:
             # To ignore non-relevant columns in any order
@@ -91,7 +92,9 @@ def main():
         parser.feed(response.text)
         currencies[pair] = parser.data
 
-    print(currencies.keys())
+    with DatabaseHandler('currencies_db.db') as dbh:
+        dbh.insert_data(currencies)
+        print(dbh.get_table())
 
 
 if __name__ == '__main__':
