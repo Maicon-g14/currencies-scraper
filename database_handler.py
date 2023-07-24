@@ -1,7 +1,7 @@
 import sqlite3
 
 ''' 
-    A database handler 
+    A database handler to save currencies scraped into SQLite
 '''
 
 

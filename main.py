@@ -1,3 +1,4 @@
+import json
 import requests
 from html.parser import HTMLParser
 from database_handler import DatabaseHandler
@@ -8,18 +9,10 @@ from database_handler import DatabaseHandler
 '''
 
 
-PATH = 'https://finance.yahoo.com/quote/{}%3DX/history?p={}%3DX'
-PAIRS = ['BRLUSD', 'EURUSD', 'CHFUSD', 'EURCHF']
-PARSE_DATA = ['Date', 'Open', 'High', 'Low', 'Close']
-
-headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0'
-}
-
-
 class customHTMLParser(HTMLParser):
-    def __init__(self):
+    def __init__(self, pair_data):
         super().__init__()
+        self.pair_data = pair_data
         self.data = {}
         self.key = []
         self.table_header = []
@@ -51,7 +44,7 @@ class customHTMLParser(HTMLParser):
                 
     def parse_header(self, data):
         # To disregard the * at the end of 'Close' header
-        if data in PARSE_DATA or data[:-1] in PARSE_DATA:
+        if data.replace('*', '') in self.pair_data:
             self.table_header.append(data)
         else:
             # To ignore non-relevant columns in any order
@@ -80,14 +73,29 @@ class customHTMLParser(HTMLParser):
             self.parse_table(data)
 
 
-def main():
-    currencies = {}
-    parser = customHTMLParser()
+def load_scraper_config(name='config'):
+    try:
+        with open(f'{name}.json') as f:
+            config = json.load(f)
+            return config['scraper']
 
-    for pair in PAIRS:
+    except FileNotFoundError:
+        print(f"File with scraper configuration not found! {name}.json must be present in current folder.")
+
+    except Exception as e:
+        print(f"Error loading scraper configs! {e.__str__()}")
+
+
+def main():
+    settings = load_scraper_config()
+
+    currencies = {}
+    parser = customHTMLParser(settings['pair-data'])
+
+    for pair in settings['currency-pairs']:
 
         # Headers are necessary in order to not receive a 404 error
-        response = requests.get(PATH.format(pair, pair), headers=headers)
+        response = requests.get(settings['website'].format(pair, pair), headers=settings['header'])
 
         parser.feed(response.text)
         currencies[pair] = parser.data
