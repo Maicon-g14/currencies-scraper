@@ -56,9 +56,10 @@ class DatabaseHandler:
                                                 data[item][inner_item][3]
                                             )
                                         )
+            print("Data saved successfully!")
 
         except sqlite3.Error as e:
-            print(f'Error inserting data into \'{table_name}\'! {e}')
+            raise RuntimeError(f'Error inserting data into \'{table_name}\'! {e}')
 
     def get_table(self, table_name="currencies"):
         try:
@@ -66,4 +67,4 @@ class DatabaseHandler:
             return self.cursor.fetchall()
 
         except sqlite3.Error as e:
-            print(f'Error fetching data from \'{table_name}\'! {e}')
+            raise RuntimeError(f'Error fetching data from \'{table_name}\'! {e}')
