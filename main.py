@@ -16,17 +16,17 @@ def load_scraper_config(name='config'):
             return config['scraper']
 
     except FileNotFoundError:
-        print(f"File with scraper settings not found! {name}.json must be present in current folder.")
+        print(f'File with scraper settings not found! {name}.json must be present in current folder.')
 
     except Exception as e:
-        raise RuntimeError(f"Error loading scraper settings! {e}")
+        raise RuntimeError(f'Error loading scraper settings! {e}')
 
 
 def parse_currencies(settings):
-    """ Parses yf webpage for each currency pair and store relevant information """
+    """ Parses yfinance webpage for each currency pair and store requested data """
     try:
         if not settings:
-            raise RuntimeError(f"Required settings not found!")
+            raise RuntimeError(f'Required settings not found!')
 
         currencies = {}
 
