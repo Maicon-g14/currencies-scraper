@@ -16,13 +16,13 @@ class DatabaseHandler:
             return self
 
         except sqlite3.Error as e:
-            raise RuntimeError(f"Error creating the database! {e}")
+            raise RuntimeError(f'Error creating the database! {e}')
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.connection.commit()
         self.connection.close()
 
-    def __create_table(self, name):
+    def _create_table(self, name):
         try:
             self.cursor.execute(f'''CREATE TABLE IF NOT EXISTS {name} (
                                         ticker TEXT, 
@@ -36,11 +36,11 @@ class DatabaseHandler:
             print(f'Table \'{name}\' has been created successfully!')
 
         except sqlite3.Error as e:
-            raise RuntimeError(f"Error creating \'{name}\' table! {e}")
+            raise RuntimeError(f'Error creating \'{name}\' table! {e}')
 
-    def insert_data(self, data, table_name="currencies"):
+    def insert_data(self, data, table_name='currencies'):
         try:
-            self.__create_table(table_name)
+            self._create_table(table_name)
 
             for item in data:
                 for inner_item in data[item]:
@@ -56,14 +56,14 @@ class DatabaseHandler:
                                                 data[item][inner_item][3]
                                             )
                                         )
-            print("Data saved successfully!")
+            print('Data saved successfully!')
 
         except sqlite3.Error as e:
             raise RuntimeError(f'Error inserting data into \'{table_name}\'! {e}')
 
-    def get_table(self, table_name="currencies"):
+    def get_table(self, table_name='currencies'):
         try:
-            self.cursor.execute(f"SELECT * FROM {table_name}")
+            self.cursor.execute(f'SELECT * FROM {table_name}')
             return self.cursor.fetchall()
 
         except sqlite3.Error as e:
