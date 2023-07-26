@@ -17,6 +17,14 @@ class customHTMLParser(HTMLParser):
         self.inside_theader = False
         self.inside_tbody = False
 
+    def reset_parsing(self):
+        self.header_positions = []
+        self.header_col_selected = 0
+        self.curr_data = ''
+        self.inside_table = False
+        self.inside_theader = False
+        self.inside_tbody = False
+
     def handle_starttag(self, tag, attrs):
         if tag == 'table':
             for attr in attrs:

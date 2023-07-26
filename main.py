@@ -30,15 +30,21 @@ def parse_currencies(settings):
 
         currencies = {}
 
-        parser = customHTMLParser(settings['pair-data'])
-
         for pair in settings['currency-pairs']:
+            source = settings['website'].format(pair, pair)
+            parser = customHTMLParser(settings['pair-data'])
+
+            print(f'Parsing data from: {source}')
+
             # Headers are necessary in order to not receive a 404 error
-            response = requests.get(settings['website'].format(pair, pair), headers=settings['header'])
+            response = requests.get(source, headers=settings['header'])
 
             # Feed and process acquired data
             parser.feed(response.text)
             currencies[pair] = parser.data
+
+            print("Data parsed successfully!")
+            parser.reset_parsing()
 
         return currencies
     except Exception as e:
