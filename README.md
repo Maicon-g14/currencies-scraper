@@ -1,4 +1,4 @@
-# Currencies Scraper App
+# YF - Currencies Scraper App
 
 A Python application that scrapes the last 30 daily currency prices from Yahoo Finance, filter it and stores into a database.
 
@@ -41,10 +41,17 @@ Here are some examples of the collected/processed data:
 
     Some Timeseries:
 
+    ![BRLUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/a39e5948-9163-4802-98c4-f21f9b3a2bf9)
+
+    ![EURUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/80aa0a02-5799-40d2-a1df-a595d4a50f79)
     
+    ![CHFUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/ae055bb9-0e6e-4b7d-b64d-8b2b7e5f7840)
+
+    ![EURCHF Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/21019bf1-407a-4e88-83da-063a3d808608)
 
     A correlation Heatmap:
 
+    ![Correlation Heatmap](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/e179dc12-f42c-47b6-af96-702adfc0e7ab)
 
     
 </details>
