@@ -36,28 +36,20 @@ On Windows: `python main.py`
 
 Here are some examples of the collected/processed data:
 
-<details>
-    <summary>Show some examples</summary>
+![BRLUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/a39e5948-9163-4802-98c4-f21f9b3a2bf9.png)
 
-    Some Timeseries:
-
-    ![BRLUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/a39e5948-9163-4802-98c4-f21f9b3a2bf9)
-
-    ![EURUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/80aa0a02-5799-40d2-a1df-a595d4a50f79)
+![EURUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/80aa0a02-5799-40d2-a1df-a595d4a50f79.png)
     
-    ![CHFUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/ae055bb9-0e6e-4b7d-b64d-8b2b7e5f7840)
+![CHFUSD Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/ae055bb9-0e6e-4b7d-b64d-8b2b7e5f7840.png)
 
-    ![EURCHF Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/21019bf1-407a-4e88-83da-063a3d808608)
+![EURCHF Timeseries](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/21019bf1-407a-4e88-83da-063a3d808608.png)
 
-    A correlation Heatmap:
+### A correlation Heatmap:
 
-    ![Correlation Heatmap](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/e179dc12-f42c-47b6-af96-702adfc0e7ab)
-
-    
-</details>
+![Correlation Heatmap](https://github.com/Maicon-g14/YF-Currencies-Scraper/assets/61253567/e179dc12-f42c-47b6-af96-702adfc0e7ab.png)
 
 ### Links: 
 
 [Jupyter Notebook](data/data_ploting.ipynb)
 
-[SQL Database](data/currencies_db.db)
+[Other Data](data/)
