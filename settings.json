@@ -1,0 +1,25 @@
+{
+  "scraper": {
+    "header": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0"
+    },
+    "website": "https://finance.yahoo.com/quote/{}%3DX/history?p={}%3DX",
+    "table-unique-field": ["data-test", "historical-prices"],
+    "currency-pairs": ["BRLUSD", "EURUSD", "CHFUSD", "EURCHF"],
+    "desired-headers": ["Date", "Open", "High", "Low", "Close"]
+  },
+  "database": {
+    "db-path": "data/",
+    "db-name": "currencies_db.db",
+    "table-name": "currencies",
+    "table-headers": {
+      "ticker": "TEXT",
+      "date": "TEXT",
+      "open": "REAL",
+      "high": "REAL",
+      "low": "REAL",
+      "close": "REAL",
+      "UNIQUE(ticker, date)": ""
+    }
+  }
+}

@@ -1,17 +1,21 @@
 import sqlite3
 
 ''' 
-    A database handler to storage scraped currencies into SQLite db
+    A database handler to manage the storage of scraped 
+    currencies into a SQLite db
 '''
 
 
 class DatabaseHandler:
-    def __init__(self, db_name):
-        self.db_name = db_name
+    def __init__(self, settings):
+        self.db_path = settings['db-path']
+        self.db_name = settings['db-name']
+        self.table_name = settings['table-name']
+        self.table_headers = settings['table-headers']
 
     def __enter__(self):
         try:
-            self.connection = sqlite3.connect(self.db_name)
+            self.connection = sqlite3.connect(self.db_path + self.db_name)
             self.cursor = self.connection.cursor()
             return self
 
@@ -22,49 +26,54 @@ class DatabaseHandler:
         self.connection.commit()
         self.connection.close()
 
-    def _create_table(self, name):
+    def _create_table(self, name, headers):
         try:
-            self.cursor.execute(f'''CREATE TABLE IF NOT EXISTS {name} (
-                                        ticker TEXT, 
-                                        date TEXT, 
-                                        open REAL, 
-                                        high REAL, 
-                                        low REAL, 
-                                        close REAL
-                                    )'''
-                                )
+            # It needs to be a list in order to remove last ','
+            query_list = list(f'CREATE TABLE IF NOT EXISTS {name} (')
+
+            for header in headers:
+                query_list += list(f' {header} {headers[header]},')
+
+            # Add query closing
+            query_list[-1] = ')'
+
+            query = "".join(query_list)
+
+            self.cursor.execute(query)
             print(f'Table \'{name}\' has been created successfully!')
 
         except sqlite3.Error as e:
             raise RuntimeError(f'Error creating \'{name}\' table! {e}')
 
-    def insert_data(self, data, table_name='currencies'):
+    def insert_currency(self, data):
         try:
-            self._create_table(table_name)
+            # Create table only works if table still doesn't exist
+            self._create_table(self.table_name, self.table_headers)
 
-            for item in data:
-                for inner_item in data[item]:
+            for ticker in data:
+                for date in data[ticker]:
+                    # Reserve space for ticker and date
+                    query = f'INSERT OR IGNORE INTO {self.table_name} VALUES (?, ?'
+                    # Each date should have it's exclusive item_list
+                    item_list = [ticker, date]
 
-                    self.cursor.execute(f'''INSERT INTO {table_name} VALUES (
-                                                ?, ?, ?, ?, ?, ?
-                                            )''', (
-                                                item,
-                                                inner_item,
-                                                data[item][inner_item][0],
-                                                data[item][inner_item][1],
-                                                data[item][inner_item][2],
-                                                data[item][inner_item][3]
-                                            )
-                                        )
-            print('Data saved successfully!')
+                    for item in data[ticker][date]:
+                        # Reserve space for each consequent associated value
+                        query += ', ?'
+                        item_list.append(item)
+
+                    # Close query
+                    query += ')'
+                    self.cursor.execute(query, tuple(item_list))
+            print('Currency history saved successfully!')
 
         except sqlite3.Error as e:
-            raise RuntimeError(f'Error inserting data into \'{table_name}\'! {e}')
+            raise RuntimeError(f'Error inserting data into \'{self.table_name}\' table! {e}')
 
-    def get_table(self, table_name='currencies'):
+    def get_currencies(self):
         try:
-            self.cursor.execute(f'SELECT * FROM {table_name}')
+            self.cursor.execute(f'SELECT * FROM {self.table_name}')
             return self.cursor.fetchall()
 
         except sqlite3.Error as e:
-            raise RuntimeError(f'Error fetching data from \'{table_name}\'! {e}')
+            raise RuntimeError(f'Error fetching data from table \'{self.table_name}\'! {e}')
