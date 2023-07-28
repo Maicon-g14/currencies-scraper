@@ -9,30 +9,35 @@ from database_handler import DatabaseHandler
 '''
 
 
-def load_scraper_config(name='config'):
+def load_settings(name='settings'):
     try:
         with open(f'{name}.json') as f:
-            config = json.load(f)
-            return config['scraper']
+            return json.load(f)
 
     except FileNotFoundError:
-        print(f'File with scraper settings not found! {name}.json must be present in current folder.')
+        print(f'File with program settings not found! {name}.json must be present in current folder.')
 
     except Exception as e:
-        raise RuntimeError(f'Error loading scraper settings! {e}')
+        raise RuntimeError(f'Error loading program settings! {e}')
+
+
+def settings_check(settings):
+    if not (settings or settings['scraper'] or settings['database']):
+        raise RuntimeError(f'Required settings/settings field(s) not found!')
 
 
 def parse_currencies(settings):
     """ Parses yfinance webpage for each currency pair and store requested data """
     try:
-        if not settings:
-            raise RuntimeError(f'Required settings not found!')
+        settings_check(settings)
 
         currencies = {}
 
         for pair in settings['currency-pairs']:
+            # Mounts the url of each currency pair
             source = settings['website'].format(pair, pair)
-            parser = customHTMLParser(settings['pair-data'])
+
+            parser = customHTMLParser(settings)
 
             print(f'Parsing data from: {source}')
 
@@ -44,25 +49,29 @@ def parse_currencies(settings):
             currencies[pair] = parser.data
 
             print("Data parsed successfully!")
-            parser.reset_parsing()
 
         return currencies
     except Exception as e:
         raise RuntimeError(f'Error while scraping currencies! {e}')
 
 
-def save_currencies(currencies, filename='currencies_db.db'):
+def save_currencies(currencies, settings):
     """ Save scraped currencies into database """
+    try:
+        settings_check(settings)
 
-    with DatabaseHandler(filename) as dbh:
-        dbh.insert_data(currencies)
-        # print(dbh.get_table())
+        with DatabaseHandler(settings) as dbh:
+            dbh.insert_currency(currencies)
+            # Show data saved on table
+            # print(dbh.get_currencies())
+    except Exception as e:
+        raise RuntimeError(f'Error saving currencies! {e}')
 
 
 def main():
-    settings = load_scraper_config()
-    currencies = parse_currencies(settings)
-    save_currencies(currencies)
+    settings = load_settings()
+    currencies = parse_currencies(settings['scraper'])
+    save_currencies(currencies, settings['database'])
 
 
 if __name__ == '__main__':
