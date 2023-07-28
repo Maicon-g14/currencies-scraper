@@ -1,7 +1,8 @@
 from html.parser import HTMLParser
 
 ''' 
-    A custom HTML parser for parsing currency pairs and it's data from a website's table
+    A custom HTML parser for parsing currency pairs and it's data 
+    from any desired website's table
 '''
 
 

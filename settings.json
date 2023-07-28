@@ -9,6 +9,7 @@
     "desired-headers": ["Date", "Open", "High", "Low", "Close"]
   },
   "database": {
+    "db-path": "data/",
     "db-name": "currencies_db.db",
     "table-name": "currencies",
     "table-headers": {

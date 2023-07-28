@@ -1,19 +1,21 @@
 import sqlite3
 
 ''' 
-    A database handler to storage scraped currencies into SQLite db
+    A database handler to manage the storage of scraped 
+    currencies into a SQLite db
 '''
 
 
 class DatabaseHandler:
     def __init__(self, settings):
+        self.db_path = settings['db-path']
         self.db_name = settings['db-name']
         self.table_name = settings['table-name']
         self.table_headers = settings['table-headers']
 
     def __enter__(self):
         try:
-            self.connection = sqlite3.connect(self.db_name)
+            self.connection = sqlite3.connect(self.db_path + self.db_name)
             self.cursor = self.connection.cursor()
             return self
 

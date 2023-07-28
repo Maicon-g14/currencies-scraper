@@ -4,8 +4,17 @@ from custom_htmlparser import customHTMLParser
 from database_handler import DatabaseHandler
 
 ''' 
-    Yahoo Finance currencies scraper 
-    It doesn't use external modules for web crawling/web scraping or data manipulation
+    YF Currencies Scraper
+    
+    A web scraping tool that fetches and clean last 30 days of specified 
+    pairs data from Yahoo Finance and save it's result into a database 
+    for further analysis.
+    
+    It doesn't use external modules for web scraping or data manipulation, 
+    instead it relies strongly in programming logic and focus in 
+    maintainability and testability.
+    
+    Ps. A number of customizations can be made in 'settings.json'.
 '''
 
 
@@ -24,13 +33,12 @@ def load_settings(name='settings'):
 def settings_check(settings):
     if not (settings or settings['scraper'] or settings['database']):
         raise RuntimeError(f'Required settings/settings field(s) not found!')
+    return True
 
 
 def parse_currencies(settings):
     """ Parses yfinance webpage for each currency pair and store requested data """
     try:
-        settings_check(settings)
-
         currencies = {}
 
         for pair in settings['currency-pairs']:
@@ -58,8 +66,6 @@ def parse_currencies(settings):
 def save_currencies(currencies, settings):
     """ Save scraped currencies into database """
     try:
-        settings_check(settings)
-
         with DatabaseHandler(settings) as dbh:
             dbh.insert_currency(currencies)
             # Show data saved on table
@@ -70,8 +76,10 @@ def save_currencies(currencies, settings):
 
 def main():
     settings = load_settings()
-    currencies = parse_currencies(settings['scraper'])
-    save_currencies(currencies, settings['database'])
+
+    if settings_check(settings):
+        currencies = parse_currencies(settings['scraper'])
+        save_currencies(currencies, settings['database'])
 
 
 if __name__ == '__main__':

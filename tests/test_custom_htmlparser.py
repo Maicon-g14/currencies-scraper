@@ -1,11 +1,20 @@
 import pytest
 from custom_htmlparser import customHTMLParser
+from main import load_settings
 
 
 # Fixture to initialize the parser
 @pytest.fixture
-def parser():
-    return customHTMLParser(['ticker', 'date', 'open', 'high', 'low', 'close'])
+def settings():
+    settings = load_settings('../settings')['scraper']
+    settings["currency-pairs"] = ["BRLUSD", "EURUSD"]
+
+    return settings
+
+
+@pytest.fixture
+def parser(settings):
+    return customHTMLParser(settings)
 
 
 # Tests recognition of desired html start tags
@@ -67,13 +76,13 @@ def test_handle_endtag_false(parser):
 # Tests the parsing of table's header
 def test_parse_header(parser):
     parser.inside_theader = True
-    parser.handle_data('high')
-    parser.handle_data('volume')
+    parser.handle_data('High')
+    parser.handle_data('Volume')
     parser.handle_data('')
     # Should remove all the '*'
-    parser.handle_data('low**')
+    parser.handle_data('Low**')
 
-    assert parser.header_positions == ['high', None, None, 'low']
+    assert parser.header_positions == ['High', None, None, 'Low']
 
 
 # Tests the parsing of data on the table
